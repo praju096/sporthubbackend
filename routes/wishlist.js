@@ -5,6 +5,7 @@ const { verifyToken } = require("../middleware/authMiddleware");
 
 router.get("/", verifyToken, wishlistController.getWishlist);
 router.post("/", verifyToken, wishlistController.addToWishlist);
+router.post("/movetocart", verifyToken, wishlistController.moveProductToCart);
 router.delete(
   "/:productId",
   verifyToken,
