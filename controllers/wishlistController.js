@@ -42,7 +42,8 @@ exports.removeFromWishlist = async (req, res) => {
 
 exports.moveProductToCart = async (req, res) => {
   try {
-    const { user_id, product_id } = req.body;
+    const user_id = req.user.id;
+    const { product_id } = req.body;
     await WishlistModel.moveToCart(user_id, product_id);
     return successResponse(res, "Product moved to cart");
   } catch (error) {
