@@ -16,19 +16,3 @@ exports.getAllCarts = async (req, res) => {
   }
 };
 
-// exports.getCartByUserId = async (req, res) => {
-//   const { userId } = req.params;
-
-//   try {
-//     const [cart] = await CartModel.getCartByUserIdForAdmin(userId);
-
-//     if (!cart || cart.length === 0) {
-//       return successResponse(res, "No cart found for this user", []);
-//     }
-
-//     return successResponse(res, "User cart retrieved successfully", cart);
-//   } catch (error) {
-//     console.error("Error in getCartByUserId:", error);
-//     return errorResponse(res, "Failed to fetch user cart", 500);
-//   }
-// };

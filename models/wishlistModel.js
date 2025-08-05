@@ -1,6 +1,7 @@
 const db = require("../config/db");
 
 const WishlistModel = {
+  // ================= User side ===============
   getByUser: (userId) =>
     db.query(
       `SELECT 
@@ -30,6 +31,23 @@ const WishlistModel = {
          VALUES (?, ?, 1)
          ON DUPLICATE KEY UPDATE quantity = quantity + 1`,
       [userId, productId]
+    ),
+  //======================= admin side ==================
+  getAllWishlists: () =>
+    db.query(
+      `SELECT 
+          wishlist.id AS wishlist_id,
+          wishlist.user_id,
+          users.fullname AS user_name,
+          users.email AS user_email,
+          wishlist.product_id,
+          products.name AS product_name,
+          products.image_url,
+          products.price
+      FROM wishlist
+      LEFT JOIN users ON wishlist.user_id = users.id
+      LEFT JOIN products ON wishlist.product_id = products.id
+      ORDER BY wishlist.user_id;`
     ),
 };
 

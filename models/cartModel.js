@@ -48,26 +48,6 @@ const CartModel = {
       LEFT JOIN products ON cart.product_id = products.id
       ORDER BY cart.user_id`
     ),
-
-  // Admin view cart of specific user.
-  getCartByUserIdForAdmin: (userId) =>
-    db.query(
-      `SELECT 
-        cart.id,
-        cart.user_id,
-        users.fullname AS user_name,
-        users.email AS user_email,
-        cart.product_id,
-        cart.quantity,
-        products.name AS product_name,
-        products.image_url,
-        products.price
-      FROM cart
-      LEFT JOIN users ON cart.user_id = users.id
-      LEFT JOIN products ON cart.product_id = products.id
-      WHERE cart.user_id = ?`,
-      [userId]
-    ),
 };
 
 module.exports = CartModel;
