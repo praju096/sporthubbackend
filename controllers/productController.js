@@ -6,7 +6,11 @@ const { successResponse, errorResponse } = require("../utils/responseHandler");
 exports.getBestsellerProducts = async (req, res) => {
   try {
     const [products] = await ProductModel.getBestsellers();
-    return successResponse(res, "Bestseller products fetched successfully", products);
+    return successResponse(
+      res,
+      "Bestseller products fetched successfully",
+      products
+    );
   } catch (error) {
     return errorResponse(res, "Error fetching bestseller products", 500, {
       error: error.message,
@@ -17,10 +21,14 @@ exports.getBestsellerProducts = async (req, res) => {
 exports.getFeaturedProducts = async (req, res) => {
   try {
     const [products] = await ProductModel.getFeatured();
-    return successResponse(res, "Featured products fetched successfully", products);
+    return successResponse(
+      res,
+      "Featured products fetched successfully",
+      products
+    );
   } catch (error) {
     return errorResponse(res, "Error fetching featured products", 500, {
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -28,10 +36,10 @@ exports.getFeaturedProducts = async (req, res) => {
 exports.getAllProducts = async (req, res) => {
   try {
     const [products] = await ProductModel.getAll();
-    return successResponse(res, "Products fetched successfully", products); 
+    return successResponse(res, "Products fetched successfully", products);
   } catch (error) {
     return errorResponse(res, "Error fetching products", 500, {
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -45,12 +53,16 @@ exports.getAllProductsWithPage = async (req, res) => {
     const [[{ total }]] = await ProductModel.getTotalCount();
     const [products] = await ProductModel.getPaginated(limit, offset);
 
-    return successResponse(res, "Products fetched successfully with pagination", {
-      data: products,
-      total,
-      page,
-      totalPages: Math.ceil(total / limit),
-    });
+    return successResponse(
+      res,
+      "Products fetched successfully with pagination",
+      {
+        data: products,
+        total,
+        page,
+        totalPages: Math.ceil(total / limit),
+      }
+    );
   } catch (error) {
     return errorResponse(res, "Error fetching products with pagination", 500, {
       error: error.message,
@@ -61,10 +73,6 @@ exports.getAllProductsWithPage = async (req, res) => {
 exports.searchProducts = async (req, res) => {
   try {
     const { query } = req.query;
-
-    if (!query) {
-      return errorResponse(res, "Search query is required", 400);
-    }
 
     const [results] = await ProductModel.searchProduct(query);
 
@@ -109,16 +117,8 @@ exports.createProduct = async (req, res) => {
       rating,
     } = req.body;
 
-    if (
-      !name ||
-      !price ||
-      !category ||
-      !category_gender ||
-      !description ||
-      !rating ||
-      !req.file
-    ) {
-      return errorResponse(res, "Missing required fields", 400);
+    if (!req.file) {
+      return errorResponse(res, "Missing file field required", 400);
     }
 
     const image_url = `/uploads/${req.file.filename}`;

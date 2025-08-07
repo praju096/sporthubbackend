@@ -5,15 +5,7 @@ const { successResponse, errorResponse } = require("../utils/responseHandler");
 
 exports.register = async (req, res) => {
   try {
-    const { fullname, email, password, confirmPassword } = req.body;
-
-    if (!fullname || !email || !password || !confirmPassword) {
-      return errorResponse(res, "All fields are required", 400);
-    }
-
-    if (password !== confirmPassword) {
-      return errorResponse(res, "Passwords do not match", 400);
-    }
+    const { fullname, email, password } = req.body;
 
     const [existing] = await UserModel.findByEmail(email);
     if (existing.length > 0) {
@@ -44,10 +36,6 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return errorResponse(res, "Email and password are required", 400);
-    }
 
     const [users] = await UserModel.findByEmail(email);
     if (!users.length) {

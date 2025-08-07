@@ -16,6 +16,7 @@ const orderRoutes = require('./routes/order');
 const orderItemRoutes = require('./routes/orderItem');
 const wishlistRoutes = require('./routes/wishlist');
 const cartRoutes = require('./routes/cart');
+const userdetailRouter= require('./routes/userDetail');
 
 var app = express();
 
@@ -38,6 +39,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/userdetail", userdetailRouter);
 app.use("/api/auth", authRoutes);
 app.use('/api/admin', adminAuthRoutes);
 app.use('/api/products', productRoutes);

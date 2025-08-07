@@ -7,10 +7,6 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return errorResponse(res, "Email and password are required", 400);
-    }
-
     const [users] = await UserModel.findByEmail(email);
     if (!users.length) {
       return errorResponse(res, "User not found", 404);
