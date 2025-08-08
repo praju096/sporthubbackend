@@ -1,53 +1,59 @@
-const OrderModel = require('../models/orderModel');
+const OrderModel = require("../models/orderModel");
+const CartModel = require("../models/cartModel");
+const { successResponse, errorResponse } = require("../utils/responseHandler");
 
-exports.getAllOrders = async (req, res) => {
+exports.placeOrder = async (req, res) => {
   try {
-    const [rows] = await OrderModel.getAll();
-    res.json(rows);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching orders', error });
+    const userId = req.user.id;
+    const { userdetail_id, payment_method, shipping_method } = req.body;
+
+    const [cartItems] = await CartModel.getByUser(userId);
+
+    if (cartItems.length === 0) {
+      return errorResponse(res, "Cart is empty", 400);
+    }
+
+    const total = cartItems.reduce(
+      (sum, item) => sum + item.quantity * item.price,
+      0
+    );
+    const data = {
+      userId,
+      userdetail_id,
+      payment_method,
+      shipping_method,
+      total,
+    };
+    const orderId = await OrderModel.createOrder(data);
+
+    for (let item of cartItems) {
+      await OrderModel.insertOrderItem(
+        orderId,
+        item.product_id,
+        item.quantity,
+        item.price
+      );
+    }
+
+    await CartModel.clear(userId);
+
+    return successResponse(res, "Order placed successfully", { orderId });
+  } catch (err) {
+    console.error(err);
+    return errorResponse(res, "Failed to place order", 500);
   }
+};
+
+exports.getUserOrders = async (req, res) => {
+  const userId = req.user.id;
+  const [orders] = await OrderModel.getOrdersByUser(userId);
+  return successResponse(res, "Fetched user orders", orders);
 };
 
 exports.getOrderById = async (req, res) => {
-  try {
-    const [rows] = await OrderModel.getById(req.params.id);
-    if (!rows.length) {
-      return res.status(404).json({ message: 'Order not found' });
-    }
-    res.json(rows[0]);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching order', error });
-  }
-};
-
-exports.createOrder = async (req, res) => {
-  try {
-    const { user_id, total_amount, status } = req.body;
-    if (!user_id || !total_amount || !status) {
-      return res.status(400).json({ message: 'Missing required fields' });
-    }
-    const [result] = await OrderModel.create(req.body);
-    res.status(201).json({ id: result.insertId, ...req.body });
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating order', error });
-  }
-};
-
-exports.updateOrder = async (req, res) => {
-  try {
-    await OrderModel.update(req.params.id, req.body);
-    res.json({ message: 'Order updated' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating order', error });
-  }
-};
-
-exports.deleteOrder = async (req, res) => {
-  try {
-    await OrderModel.delete(req.params.id);
-    res.json({ message: 'Order deleted' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error deleting order', error });
-  }
+  const userId = req.user.id;
+  const orderId = req.params.id;
+  const [order] = await OrderModel.getOrderById(userId, orderId);
+  const [items] = await OrderModel.getOrderItems(orderId);
+  return successResponse(res, "Fetched order", { order: order[0], items });
 };

@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const ProductModel = require("../models/ProductModel");
+const ProductModel = require("../models/productModel");
 const { successResponse, errorResponse } = require("../utils/responseHandler");
 
 exports.getBestsellerProducts = async (req, res) => {

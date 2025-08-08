@@ -1,11 +1,35 @@
-const db = require('../config/db');
+const db = require("../config/db");
 
 const OrderModel = {
-  getAll: () => db.query('SELECT * FROM orders'),
-  getById: (id) => db.query('SELECT * FROM orders WHERE id = ?', [id]),
-  create: (data) => db.query('INSERT INTO orders SET ?', [data]),
-  update: (id, data) => db.query('UPDATE orders SET ? WHERE id = ?', [data, id]),
-  delete: (id) => db.query('DELETE FROM orders WHERE id = ?', [id]),
-};
+  createOrder: async (data) => {
+    const [result] = await db.query(`INSERT INTO orders SET ?`, [data]);
+    return result.insertId;
+  },
 
+  insertOrderItem: (orderId, productId, quantity, price) => {
+    return db.query(
+      `INSERT INTO order_items (order_id, product_id, quantity, price)
+     VALUES (?, ?, ?, ?)`,
+      [orderId, productId, quantity, price]
+    );
+  },
+
+  getOrdersByUser: (userId) => {
+    return db.query(
+      `SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC`,
+      [userId]
+    );
+  },
+
+  getOrderById: (userId, orderId) => {
+    return db.query(`SELECT * FROM orders WHERE id = ? AND user_id = ?`, [
+      orderId,
+      userId,
+    ]);
+  },
+
+  getOrderItems: (orderId) => {
+    return db.query(`SELECT * FROM order_items WHERE order_id = ?`, [orderId]);
+  },
+};
 module.exports = OrderModel;
