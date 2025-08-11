@@ -4,10 +4,10 @@ const { successResponse, errorResponse } = require("../utils/responseHandler");
 
 exports.placeOrder = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const user_id = req.user.id;
     const { userdetail_id, payment_method, shipping_method } = req.body;
 
-    const [cartItems] = await CartModel.getByUser(userId);
+    const [cartItems] = await CartModel.getByUser(user_id);
 
     if (cartItems.length === 0) {
       return errorResponse(res, "Cart is empty", 400);
@@ -18,7 +18,7 @@ exports.placeOrder = async (req, res) => {
       0
     );
     const data = {
-      userId,
+      user_id,
       userdetail_id,
       payment_method,
       shipping_method,
@@ -35,7 +35,7 @@ exports.placeOrder = async (req, res) => {
       );
     }
 
-    await CartModel.clear(userId);
+    await CartModel.clear(user_id);
 
     return successResponse(res, "Order placed successfully", { orderId });
   } catch (err) {

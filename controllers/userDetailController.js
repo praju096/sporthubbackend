@@ -4,7 +4,7 @@ const { successResponse, errorResponse } = require("../utils/responseHandler");
 exports.getUserDetail = async (req, res) => {
   try {
     const userId = req.user.id;
-    const userDetail = await userDeatailModel.getByUserDetailId(userId);
+    const [userDetail] = await userDeatailModel.getByUserDetailId(userId);
     return successResponse(res, "User detail fetched", userDetail);
   } catch (err) {
     return errorResponse(res, "Failed to fetch user detail", 500);
