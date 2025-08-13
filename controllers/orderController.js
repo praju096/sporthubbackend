@@ -57,3 +57,50 @@ exports.getOrderById = async (req, res) => {
   const [items] = await OrderModel.getOrderItems(orderId);
   return successResponse(res, "Fetched order", { order: order[0], items });
 };
+
+exports.getAllOrders = async (req, res) => {
+  try {
+    const [orders] = await OrderModel.getAllOrdersWithUser();
+
+    return successResponse(res, "Fetched all orders", orders);
+  } catch (err) {
+    console.error(err);
+    return errorResponse(res, "Failed to fetch orders", 500);
+  }
+};
+
+exports.updateOrderStatus = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return errorResponse(res, "Unauthorized", 403);
+    }
+
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!['pending','confirmed','shipped','delivered'].includes(status)) {
+      return errorResponse(
+        res,
+        "Invalid status. Allowed status: pending, confirmed, shipped and delivered",
+        400
+      );
+    }
+
+    if (!status ) {
+      return errorResponse(res, "Status are required", 400);
+    }
+
+    const [result] = await OrderModel.updateOrderStatus(status, id);
+
+    if (result.affectedRows === 0) {
+      return errorResponse(res, "Status not found", 404);
+    }
+
+    return successResponse(res, "Order status updated successfully", { status, id });
+  } catch (err) {
+    console.error(err);
+    return errorResponse(res, "Failed to update order status", 500);
+  }
+};
+
+
