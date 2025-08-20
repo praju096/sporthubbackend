@@ -13,11 +13,11 @@ exports.getUserDetail = async (req, res) => {
 
 exports.addUserDetail = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const user_id = req.user.id;
     const { full_name, phone, address_line, city, state, pincode, country } =
       req.body;
     const data = {
-      userId,
+      user_id,
       full_name,
       phone,
       address_line,
