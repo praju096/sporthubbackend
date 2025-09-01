@@ -8,15 +8,16 @@ const cors = require("cors");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const authRoutes = require("./routes/auth");
-const adminAuthRoutes = require('./routes/adminAuth');
+const adminAuthRoutes = require("./routes/adminAuth");
 const db = require("./config/db");
-const productRoutes = require('./routes/product');
-const categoryProductsRoutes = require('./routes/categoryProductsRoutes');
-const orderRoutes = require('./routes/order');
-const orderItemRoutes = require('./routes/orderItem');
-const wishlistRoutes = require('./routes/wishlist');
-const cartRoutes = require('./routes/cart');
-const userdetailRouter= require('./routes/userDetail');
+const productRoutes = require("./routes/product");
+const categoryProductsRoutes = require("./routes/categoryProductsRoutes");
+const orderRoutes = require("./routes/order");
+const orderItemRoutes = require("./routes/orderItem");
+const wishlistRoutes = require("./routes/wishlist");
+const cartRoutes = require("./routes/cart");
+const userdetailRouter = require("./routes/userDetail");
+const contactRoutes = require("./routes/contactRoutes");
 
 var app = express();
 
@@ -41,14 +42,14 @@ app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/userdetail", userdetailRouter);
 app.use("/api/auth", authRoutes);
-app.use('/api/admin', adminAuthRoutes);
-app.use('/api/products', productRoutes);
+app.use("/api/admin", adminAuthRoutes);
+app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryProductsRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/order-items', orderItemRoutes);
-app.use('/api/wishlist', wishlistRoutes);
-app.use('/api/cart', cartRoutes);
-
+app.use("/api/orders", orderRoutes);
+app.use("/api/order-items", orderItemRoutes);
+app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/contact", contactRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

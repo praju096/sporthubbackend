@@ -29,6 +29,6 @@ exports.findProductsByCategory = async (category) => {
       break;
   }
 
-  const [rows] = await db.execute(query, params);
+  const [rows] = await db.query(query, params);
   return rows;
 };
