@@ -3,7 +3,8 @@ const { body, param, query } = require("express-validator");
 exports.createProductValidator = [  
   body("name").notEmpty().withMessage("Product name is required"),
   body("price").isFloat({ gt: 0 }).withMessage("Price must be greater than 0"),
-  body("category").notEmpty().withMessage("Category is required"),
+  body("category_id").notEmpty().withMessage("Category is required"),
+  body("brand_id").notEmpty().withMessage("Category is required"),
   body("description").notEmpty().withMessage("Description is required"),
   body("original_price").optional().isFloat({ gt: 0 }),
   body("is_new").optional().isBoolean(),

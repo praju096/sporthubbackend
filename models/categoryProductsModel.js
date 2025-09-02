@@ -1,7 +1,27 @@
 const db = require("../config/db");
 
 exports.findProductsByCategory = async (category) => {
-  let query = "SELECT * FROM products";
+  let query = `SELECT 
+    p.id,
+    p.name,
+    p.price,
+    p.original_price,
+    p.description,
+    p.image_url,
+    p.category_gender,
+    p.is_new,
+    p.is_on_sale,
+    p.bestseller,
+    p.featured_product,
+    p.created_at,
+    p.rating,
+    c.category_id,
+    c.category_name,
+    b.brand_name,
+    b.brand_id
+  FROM products p
+  LEFT JOIN categories c ON p.category_id = c.category_id
+  LEFT JOIN brands b ON p.brand_id = b.brand_id`;
   let params = [];
 
   switch (category) {
