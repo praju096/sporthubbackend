@@ -1,7 +1,13 @@
 const db = require("../config/db");
 const UserModel = {
-  findByEmail: (email) => {
-  return db.query("SELECT * FROM users WHERE email = ?", [email]);
+  findByEmailWithRole: (email) => {
+    return db.query(
+      `SELECT u.id, u.fullname, u.email, u.password, r.role
+       FROM users u
+       JOIN roles r ON u.role_id = r.id
+       WHERE u.email = ?`,
+      [email]
+    );
   },
 
   create: ({ fullname, email, password }) => {
@@ -12,10 +18,20 @@ const UserModel = {
   },
 
   getAll: () => {
-    return db.query("SELECT id, fullname, email, role FROM users");
+    return db.query(`
+    SELECT u.id, u.fullname, u.email, r.role
+    FROM users u
+    LEFT JOIN roles r ON u.role_id = r.id`);
   },
-  update: (role, id) => {
-    return db.query("UPDATE users SET role = ? WHERE id = ?", [role, id]);
+  getRoleByName: (roleName) => {
+    return db.query("SELECT id FROM roles WHERE role = ?", [roleName]);
+  },
+
+  updateRole: (userId, roleId) => {
+    return db.query("UPDATE users SET role_id = ? WHERE id = ?", [
+      roleId,
+      userId,
+    ]);
   },
 
   delete: (id) => {

@@ -7,7 +7,7 @@ exports.register = async (req, res) => {
   try {
     const { fullname, email, password } = req.body;
 
-    const [existing] = await UserModel.findByEmail(email);
+    const [existing] = await UserModel.findByEmailWithRole(email);
     if (existing.length > 0) {
       return errorResponse(res, "Email already exists", 409);
     }
@@ -37,7 +37,7 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const [users] = await UserModel.findByEmail(email);
+    const [users] = await UserModel.findByEmailWithRole(email);
     if (!users.length) {
       return errorResponse(res, "User not found", 404);
     }
@@ -77,7 +77,7 @@ exports.login = async (req, res) => {
 
 exports.getProfile = async (req, res) => {
   try {
-    const [user] = await UserModel.findByEmail(req.user.email);
+    const [user] = await UserModel.findByEmailWithRole(req.user.email);
 
     if (!user.length) {
       return errorResponse(res, "User not found", 404);

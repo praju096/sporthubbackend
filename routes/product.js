@@ -11,13 +11,13 @@ const {
 } = require("../middleware/validators/productValidator");
 const validate = require("../middleware/validate");
 const { verifyToken } = require("../middleware/authMiddleware");
-const { isAdmin } = require("../middleware/roleMiddleware");
+const { isAdmin, hasRole } = require("../middleware/roleMiddleware");
 
 router.get("/", productController.getAllProducts);
 router.get(
   "/paginated",
   verifyToken,
-  isAdmin,
+  hasRole(["admin", "merchant"]),
   paginationValidator,
   validate,
   productController.getAllProductsWithPage
@@ -39,7 +39,7 @@ router.get(
 router.post(
   "/",
   verifyToken,
-  isAdmin,
+  hasRole(["admin", "merchant"]),
   uploadMiddleware.single("image"),
   createProductValidator,
   validate,
@@ -48,7 +48,7 @@ router.post(
 router.put(
   "/:id",
   verifyToken,
-  isAdmin,
+  hasRole(["admin", "merchant"]),
   uploadMiddleware.single("image"),
   updateProductValidator,
   validate,
@@ -57,7 +57,7 @@ router.put(
 router.delete(
   "/:id",
   verifyToken,
-  isAdmin,
+  hasRole(["admin", "merchant"]),
   getProductByIdValidator,
   validate,
   productController.deleteProduct

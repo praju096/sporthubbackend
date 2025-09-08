@@ -18,7 +18,7 @@ exports.updateUserRole = async (req, res) => {
     const { id } = req.params;
     const { role } = req.body;
 
-    if (!["admin", "user"].includes(role)) {
+    if (!["admin", "user", "merchant", "delivery_partner"].includes(role)) {
       return errorResponse(
         res,
         "Invalid role. Allowed roles: admin or user",
@@ -26,7 +26,15 @@ exports.updateUserRole = async (req, res) => {
       );
     }
 
-    const [result] = await UserModel.update(role, id);
+    const [roleRows] = await UserModel.getRoleByName(role);
+
+    if (roleRows.length === 0) {
+      return errorResponse(res, "Role does not exist", 400);
+    }
+
+    const roleId = roleRows[0].id;
+
+    const [result] = await UserModel.updateRole(id, roleId);
 
     if (result.affectedRows === 0) {
       return errorResponse(res, "User not found", 404);

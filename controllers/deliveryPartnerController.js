@@ -9,7 +9,7 @@ exports.login = async (req, res) => {
 
     const [users] = await UserModel.findByEmailWithRole(email);
     if (!users.length) {
-      return errorResponse(res, "Admin not found", 404);
+      return errorResponse(res, "Delivery Partner not found", 404);
     }
 
     const user = users[0];
@@ -18,8 +18,8 @@ exports.login = async (req, res) => {
       return errorResponse(res, "Invalid password", 401);
     }
 
-    if (user.role !== "admin") {
-      return errorResponse(res, "Access denied. Admins only.", 403);
+    if (user.role !== "delivery_partner") {
+      return errorResponse(res, "Access denied. Delivery Partner only.", 403);
     }
 
     const token = jwt.sign(
@@ -35,7 +35,7 @@ exports.login = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    return successResponse(res, "Admin login successful", {
+    return successResponse(res, "Delivery Partner login successful", {
       user: {
         id: user.id,
         email: user.email,
@@ -44,7 +44,7 @@ exports.login = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Admin Login Error:", err);
+    console.error("Delivery Partner Login Error:", err);
     return errorResponse(res, "Login error", 500, { error: err.message });
   }
 };
@@ -55,5 +55,5 @@ exports.logout = async (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
   });
-  res.json({ message: "Logged out admin successfully" });
+  res.json({ message: "Logged out Delivery Partner successfully" });
 };
