@@ -22,6 +22,7 @@ const userdetailRouter = require("./routes/userDetail");
 const contactRoutes = require("./routes/contactRoutes");
 const categoriesItemRoutes = require("./routes/categoriesItem");
 const brandRoutes = require("./routes/brand");
+const reviewRoutes = require("./routes/reviewRoutes");
 
 var app = express();
 
@@ -58,6 +59,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/categoriesitem", categoriesItemRoutes);
 app.use("/api/brand", brandRoutes);
+app.use("/api/review", reviewRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
